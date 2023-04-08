@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class MemberWriteService {
-    final private MemberRepository memberRepository;
-    public Member create(RegisterMemberCommand command) {
+    private final MemberRepository memberRepository;
+    public Member register(RegisterMemberCommand command) {
         /*
          * 목표
          * - 회원 정보(이메일, 닉네임, 생년월일)를 등록하는 것
