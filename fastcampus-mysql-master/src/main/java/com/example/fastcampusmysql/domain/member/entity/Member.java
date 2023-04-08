@@ -10,12 +10,12 @@ import java.util.Objects;
 
 @Getter
 public class Member {
-    final private Long id;
+    private final Long id;
     private String nickname;
-    final private String email;
-    final private LocalDate birthday;
-    final private LocalDateTime createdAt;
-    final private static long SAFE_MAX_LENGTH = 10;
+    private final String email;
+    private final LocalDate birthday;
+    private final LocalDateTime createdAt;
+    private static final long SAFE_MAX_LENGTH = 10;
     @Builder
     public Member(Long id, String nickname, String email, LocalDate birthday, LocalDateTime createdAt) {
         this.id = id;
@@ -28,7 +28,13 @@ public class Member {
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
-    void validateNickname(String nickname) {
+    public void changeNickname(String to) {
+        Objects.requireNonNull(to);
+        validateNickname(to);
+        nickname = to;
+    }
+
+    private void validateNickname(String nickname) {
         Assert.isTrue(nickname.length() <= SAFE_MAX_LENGTH, "최대 길이를 초과했습니다.");
     }
 }
