@@ -6,11 +6,13 @@ import com.example.fastcampusmysql.utill.PostFixtureFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
 
+@Transactional // SQL이 롤백이 된다.
 @SpringBootTest
 class PostBulkInsertTest {
     @Autowired
@@ -20,7 +22,7 @@ class PostBulkInsertTest {
     void bulkInsert() {
         var easyRandom = PostFixtureFactory.get(
                 3L,
-                LocalDate.of(2022, 1, 1),
+                LocalDate.of(1970, 1, 1),
                 LocalDate.of(2023, 4, 4)
         );
         int _1man = 10000;
