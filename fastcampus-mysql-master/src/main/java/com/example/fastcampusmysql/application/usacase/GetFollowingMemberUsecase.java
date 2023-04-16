@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class GetFollowingMemberUsacase {
+public class GetFollowingMemberUsecase {
     private final MemberReadService memberReadService;
     private final FollowReadService followReadService;
 
