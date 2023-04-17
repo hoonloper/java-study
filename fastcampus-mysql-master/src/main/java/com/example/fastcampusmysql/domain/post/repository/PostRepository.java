@@ -1,5 +1,6 @@
 package com.example.fastcampusmysql.domain.post.repository;
 
+import com.example.fastcampusmysql.domain.member.entity.Member;
 import com.example.fastcampusmysql.utils.PageHelper;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
@@ -14,12 +15,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -32,6 +35,7 @@ public class PostRepository {
             .memberId(resultSet.getLong("memberId"))
             .contents(resultSet.getString("contents"))
             .createdDate(resultSet.getObject("createdDate", LocalDate.class))
+            .likeCount(resultSet.getLong("likeCount"))
             .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
             .build();
     private static final RowMapper<DailyPostCount> DAILY_POST_COUNT_MAPPER = (ResultSet resultSet, int rowNum) -> new DailyPostCount(
@@ -66,6 +70,16 @@ public class PostRepository {
         var posts = namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
 
         return new PageImpl(posts, pageable, getCount(memberId));
+    }
+
+    public Optional<Post> findById(Long postId, Boolean requiredLock) {
+        var sql = String.format("SELECT * FROM %s WHERE id = :postId", TABLE);
+        if(requiredLock) {
+            sql += " FOR UPDATE";
+        }
+        var params = new MapSqlParameterSource().addValue("postId", postId);
+        var nullablePost = namedParameterJdbcTemplate.queryForObject(sql, params, ROW_MAPPER);
+        return Optional.ofNullable(nullablePost);
     }
 
     private Long getCount(Long memberId) {
@@ -165,7 +179,22 @@ public class PostRepository {
         if(post.getId() == null) {
             return insert(post);
         }
-        throw new UnsupportedOperationException("Post는 갱신을 지원하지 않습니다.");
+        return update(post);
+    }
+
+
+    private Post update(Post post) {
+        var sql = String.format("""
+                UPDATE %s SET
+                    memberId = :memberId,
+                    contents = :contents,
+                    createdDate = :createdDate,
+                    likeCount = :likeCount
+                WHERE id = :id
+                """, TABLE);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(post);
+        namedParameterJdbcTemplate.update(sql, params);
+        return post;
     }
 
     public void bulkInsert(List<Post> posts) {
