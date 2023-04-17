@@ -1,6 +1,5 @@
 package com.example.fastcampusmysql.domain.post.repository;
 
-import com.example.fastcampusmysql.domain.member.entity.Member;
 import com.example.fastcampusmysql.utils.PageHelper;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -36,6 +34,7 @@ public class PostRepository {
             .contents(resultSet.getString("contents"))
             .createdDate(resultSet.getObject("createdDate", LocalDate.class))
             .likeCount(resultSet.getLong("likeCount"))
+            .version(resultSet.getLong("version"))
             .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
             .build();
     private static final RowMapper<DailyPostCount> DAILY_POST_COUNT_MAPPER = (ResultSet resultSet, int rowNum) -> new DailyPostCount(
@@ -190,10 +189,15 @@ public class PostRepository {
                     contents = :contents,
                     createdDate = :createdDate,
                     likeCount = :likeCount
-                WHERE id = :id
+                    version = :version + 1
+                WHERE id = :id AND version = :version
                 """, TABLE);
         SqlParameterSource params = new BeanPropertySqlParameterSource(post);
-        namedParameterJdbcTemplate.update(sql, params);
+        var updatedCount = namedParameterJdbcTemplate.update(sql, params);
+
+        if(updatedCount == 0) {
+            throw new RuntimeException("갱신 실패");
+        }
         return post;
     }
 

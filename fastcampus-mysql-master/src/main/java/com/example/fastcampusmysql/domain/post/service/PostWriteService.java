@@ -30,4 +30,13 @@ public class PostWriteService {
         post.incrementLikeCount();
         postRepository.save(post);
     }
+
+    // 낙관적 락, 데이터 정합성을 위해
+    public void likePostByOptimisticLock(Long postId) {
+        // 동시성 문제가 발생하기 좋은 사레, 실무에서는 어노테이션 하나만으로 구현이 가능하기에 쉽게 가능하다.
+        // MSA 구조로 가면 다른 도메인으로 사용하기 때문에 비관적 락을 사용하기 어렵다.
+        var post = postRepository.findById(postId, false).orElseThrow();
+        post.incrementLikeCount();
+        postRepository.save(post);
+    }
 }
