@@ -1,5 +1,18 @@
 # 대용량 처리를 위한 MySQL 이해
-## 1. 대용량 시스템에 대한 이해
+## 목차
+
+1. [대용량 시스템에 대한 이해](#대용량-시스템에-대한-이해)
+2. [데이터베이스(MySQL)](#데이터베이스)
+3. [정규화 및 비정규화](#정규화-및-비정규화)
+4. [조회 최적화를 위한 인덱스 이해하기](#조회-최적화를-위한-인덱스-이해하기)
+5. [페이징 처리](#페이징-처리)
+6. [타임라인 Fan Out On Read, Fan On Write](#타임라인)
+7. [트랜잭션](#트랜잭션)
+8. [멀티 스레드 환경에 대한 이해](#멀티-스레드-환경에-대한-이해)
+
+---
+
+## 대용량 시스템에 대한 이해
 
 ### 대용량 트래픽 / 데이터 처리는 왜 어려울까?
 
@@ -16,8 +29,7 @@
   → 문제가 생겼을 때 빠르게 인지할 수 있어야 하고 문제의 범위를 최소화 할 수 있어야 한다.
 
 ### **스케일 업 vs 스케일 아웃**
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2d154db6-5a60-4ae3-8ad9-b2538cf3ec62/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232497568-11432888-70ca-49b0-aec5-bd0f623224b2.png)
 
 ### **모놀리식 서버의 부하**
 
@@ -26,12 +38,11 @@
 3. 대외기관(외부 API) 비동기 큐
 
 ### **분산 아키텍처의 예**
+![image](https://user-images.githubusercontent.com/78959175/232497474-bff9e600-2381-4e20-999a-b64744d0115a.png)
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e037f3d2-b4b2-4f3f-ab48-fd43ffebc40f/Untitled.png)
+## 데이터베이스
 
-## 2. MySQL
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/011a78b0-c4a4-437b-9b4b-3c3aeb05bbed/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232497534-1bd03848-2785-467e-8e69-c55298aa7172.png)
 
 - **쿼리파서**
   → SQL을 파싱하여 Syntax Tree를 만듦, 이 과정에서 문법 오류 검사가 이루어짐
@@ -49,7 +60,7 @@
 - 옵티마이저가 어떤 전략을 결정하느냐에 따라 성능이 많이 달라짐
 - 가끔씩 성능이 나쁜 판단을 해 개발자가 힌트를 사용해 도움을 줄 수 있음
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c40b574f-63ff-4ae5-a7af-ed732f01dc36/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232497653-649b4031-41b2-4e23-bdee-be6a4b077ec3.png)
 
 - **소프트 파싱**
   → SQL, 실행계획을 캐시에서 찾아 옵티마이저 과정을 생략하고 실행 단계로 넘어감
@@ -80,7 +91,7 @@
 
 **InnoDB 핵심 키워드 → Clustered Index, Redo - Undo, Buffer pool**
 
-## 3. 정규화 - 비정규화
+## 정규화 및 비정규화
 
 > **테이블 설계 관점에서 조회와 쓰기 사이의 트레이드 오프**
 >
@@ -115,7 +126,8 @@
   A → B → C → D, 테이블을 찾으면 깊게 댑스를 들어간다.
   A → B(D참조) → C → D, 아래와 같이 밸런스를 지속적으로 맞춰야 한다.
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/85daa4aa-dc77-45d2-884a-01fa6652d450/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232498282-558d778f-af89-4ebf-a8cb-a55230c0e85d.png)
+
 
 **정규화를 하기로 했다면 읽기시 데이터를 어떻게 가져올 것인가?**
 
@@ -129,7 +141,7 @@
 - 조인을 사용하게 되면, 이런 기법들을 사용하는데 제한이 있거나 더 많은 리소스가 들 수 있다.
 - 읽기 쿼리 한번 더 발생되는 것은 그렇게 큰 부담이 아닐 수도 있다.
 
-## 4. 조회 최적화를 위한 인덱스 이해하기
+## 조회 최적화를 위한 인덱스 이해하기
 
 |  | 메모리 | 디스크 |
 | --- | --- | --- |
@@ -164,7 +176,7 @@ WAL은 많은 데이터베이스 시스템에서 사용되는 중요한 트랜�
 
 </aside>
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/39803f06-6105-412f-8fc8-101cec65788d/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232498377-81045d80-5d76-45fc-8332-78b616d9800d.png)
 
 **⭐️ 결국 데이터 베이스 성능의 핵심은 디스크의 랜덤I/O(접근)을 최소화 하는 것이다.**
 
@@ -200,7 +212,7 @@ WAL은 많은 데이터베이스 시스템에서 사용되는 중요한 트랜�
         - Oracle은 주소를 가지고 있고, MySQL은 PK 인덱스를 가지고 있음
         - PK를 물고 있고, 삽입/삭제가 발생할 때 DB에서도 동일하게 발생하기에 조회 성능은 올라가나 쓰기 성능은 저하됨
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/da470df7-2c4c-4f12-9c3f-9d7ca774e976/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232498434-8016adae-acfd-48be-8c29-e4e1cd2e2264.png)
 
 ### 클러스터 인덱스
 
@@ -282,7 +294,7 @@ where order by, group by 혼합해서 사용할 때에는 인덱스를 잘 고�
 - **꼭 인덱스로만 해결할 수 있는 문제인지 고민해야 한다.**
 - ⭐️ **카디널리티가 높은 값, 즉 식별값이 높은 값으로 설정하는 게 좋다.**
 
-## 5. 페이징 처리
+## 페이징 처리
 
 ### 오프셋 기반 페이징 구현의 문제
 
@@ -329,7 +341,7 @@ FROM 회원 INNER JOIN 커버링 on 회원.id = 커버링.id;
 
 **LIMIT, ORDER BY, OFFSET 등은 불필요한 데이터블록 접근을 커버링 인덱스를 통해 최소화로 랜덤 I/O를 줄인다.**
 
-## 6. 타임라인
+## 타임라인
 
 기존 진행한 방식은 **Fan Out On Read(Pull Model)**이라고 한다.
 사용자가 매번 홈에 접속할 때마다 부하가 발생한다.
@@ -381,7 +393,7 @@ Push 모델은 Pull 모델보다 시스템 복잡도가 높다.
 
 ⭐️ **결국 은총알은 없다. 상황, 자원, 정책 등 여러가지를 고려해 트레이드 오프 해야한다.**
 
-## 7. 트랜잭션
+## 트랜잭션
 
 **여러 SQL문을 하나의 오퍼레이션으로 묶을 줄 알아야 한다.**
 
@@ -456,7 +468,7 @@ ISOLATION - **트랜잭션은 서로 간섭하지 않고 독립적으로 동작*
 - **Phantom READ(유령 리드)
   →**한 트랜잭션이 같은 범위의 쿼리를 두 번 이상 수행할 때, 그 사이에 다른 트랜잭션이 데이터를 추가 또는 삭제하는 현상이다. Phantom Read가 발생하면 트랜잭션 내에서 같은 범위의 쿼리를 두 번 이상 실행해도 결과가 달라지는 것을 의미하며, 데이터의 무결성과 일관성이 깨질 수 있다.
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/59d20baf-65ce-4501-a39f-3245b02196fe/Untitled.png)
+![image](https://user-images.githubusercontent.com/78959175/232498580-2ccbdca7-3cfe-46d5-8639-30ee6dc11856.png)
 
 **아래로 갈수록 이상현상이 없음, 허나 동시처리량이 처참하다.**
 READ COMMITTED, REPEATABLE READ를 주로 사용한다.
@@ -469,7 +481,7 @@ READ COMMITTED, REPEATABLE READ를 주로 사용한다.
 
 ⭐️ **따라서 트랜잭션 격리 레벨을 선택할 때는 응용 프로그램의 요구사항과 동시성, 데이터 일관성 등을 고려하여 적절한 격리 레벨을 선택하는 것이 중요하다.**
 
-## 8. 멀티 스레드 환경에 대한 이해
+## 멀티 스레드 환경에 대한 이해
 
 대부분 하나의 웹 서버는 여러 개의 요청을 동시에 수행할 수 있다.
 반대로 작성한 코드 한 줄은 동시에 수행될 수 있다
