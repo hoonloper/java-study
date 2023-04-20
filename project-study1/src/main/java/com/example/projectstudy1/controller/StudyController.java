@@ -11,4 +11,10 @@ public class StudyController {
         model.addAttribute("userName", "myName~!");
         return "greetings";
     }
+
+    @GetMapping("/bye")
+    public String seeYouNext(Model model) {
+        model.addAttribute("userName", "myName~!");
+        return "goodbye";
+    }
 }
