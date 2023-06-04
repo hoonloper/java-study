@@ -1,12 +1,18 @@
 package kephispring.helloboot;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
-@RequestMapping("/hello") // 1. 클래스 레벨을 먼저 참고하고
+// @RequestMapping("/hello") 1. 클래스 레벨을 먼저 참고하고
+// @MyComponent 이 어노테이션을 메타 어노테이션(어노테이션 위 어노테이션)을 가진 어노테이션에 붙여도 동일한 효과가 발생한다. Component를 붙이면 빈으로 등록해준다는 것
+// @Controller Componet 어노테이션이 포함되어 있다.
+@RestController // Controller 확장. @Controller, @ResponseBody를 메타 어노테이션으로 가지고 있다.
 public class HelloController {
     private final HelloService helloService;
 
@@ -15,8 +21,8 @@ public class HelloController {
     }
 
     // @RequestMapping(value = "/hello", method = RequestMethod.GET) 옛날방식
-    @GetMapping // 2. 메소드 레벨을 찾아서 등록한다.
-    @ResponseBody // view 파일을 찾지 않고 바디값으로 응답하겠다는 어노테이션, 아래 주석 해결법. RestController는 생략 가능
+    @GetMapping("/hello") // 2. 메소드 레벨을 찾아서 등록한다.
+    // @ResponseBody view 파일을 찾지 않고 바디값으로 응답하겠다는 어노테이션, 아래 주석 해결법. RestController는 생략 가능
     public String hello(String name) { // String을 리턴하면 view를 가장 먼저 찾으려고 하는데 없어서 404 에러가 발생한다.
         return helloService.sayHello(Objects.requireNonNull(name));
     }
