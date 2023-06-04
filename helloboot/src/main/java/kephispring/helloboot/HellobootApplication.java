@@ -5,6 +5,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -21,6 +22,27 @@ public class HellobootApplication {
 	public static void main(String[] args) {
 		TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
+			// 프론트 컨트롤러 처리
+			servletContext.addServlet("frontcontroller", new HttpServlet() {
+				@Override
+				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+					// 인증, 보안, 다국어, 공통 기능
+					if (req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())) {
+						/* GET /hello */
+						String name = req.getParameter("name");
+
+						// /hello로 요청된 응답을 여기에서 처리한다.
+						resp.setStatus(HttpStatus.OK.value());
+						resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+						resp.getWriter().println("Hello " + name);
+					} else if (req.getRequestURI().equals("/user")) {
+
+					} else {
+						resp.setStatus(HttpStatus.NOT_FOUND.value());
+					}
+				}
+			}).addMapping("/*");
+			/* 단일 서블렛 등록
 			servletContext.addServlet("hello", new HttpServlet() {
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,6 +55,7 @@ public class HellobootApplication {
 					resp.getWriter().println("Hello " + name);
 				}
 			}).addMapping("/hello");
+			 */
 		});
 		webServer.start();
 	}
