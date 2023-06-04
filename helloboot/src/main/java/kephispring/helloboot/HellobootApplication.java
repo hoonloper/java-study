@@ -3,12 +3,31 @@ package kephispring.helloboot;
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class HellobootApplication {
+
+	// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
 	public static void main(String[] args) {
-		// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
 		TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
-		WebServer webServer = serverFactory.getWebServer();
+		WebServer webServer = serverFactory.getWebServer(servletContext -> {
+			servletContext.addServlet("hello", new HttpServlet() {
+				@Override
+				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+					// /hello로 요청된 응답을 여기에서 처리한다.
+					resp.setStatus(200);
+					resp.setHeader("Content-Type", "text/plain");
+					resp.getWriter().println("Hello Servlet");
+				}
+			}).addMapping("/hello");
+		});
 		webServer.start();
 	}
 }
