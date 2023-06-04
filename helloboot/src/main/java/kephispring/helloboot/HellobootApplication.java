@@ -24,6 +24,8 @@ public class HellobootApplication {
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
 			// 프론트 컨트롤러 처리
 			servletContext.addServlet("frontcontroller", new HttpServlet() {
+			 HelloController helloController = new HelloController();
+
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 					// 인증, 보안, 다국어, 공통 기능
@@ -31,10 +33,14 @@ public class HellobootApplication {
 						/* GET /hello */
 						String name = req.getParameter("name");
 
+						// HelloController에 작업을 위임
+						// name을 가져와서 넣어주는 것, Dto라든지 Bean으로 넘겨주는 것을 바인딩
+					    String ret = helloController.hello(name);
+
 						// /hello로 요청된 응답을 여기에서 처리한다.
 						resp.setStatus(HttpStatus.OK.value());
 						resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-						resp.getWriter().println("Hello " + name);
+						resp.getWriter().println(ret);
 					} else if (req.getRequestURI().equals("/user")) {
 
 					} else {
