@@ -20,10 +20,11 @@ import java.io.IOException;
 public class HellobootApplication {
 
 	public static void main(String[] args) {
-		// Spring 컨테이너 만들기
+		// Spring 컨테이너 만들기(Assembler)
 		// 스프링 컨테이너는 오브젝트를 만들어 놓고 재사용하기에 싱글톤 패턴과 유사하다, 즉 싱글턴 레지스터라고 한다.
 		GenericApplicationContext applicationContext = new GenericApplicationContext();
 		applicationContext.registerBean(HelloController.class); // Bean 등록 끝
+		applicationContext.registerBean(SimpleHelloService.class); // 컨트롤러 생성자에 주입한다(Dependency injection)
 		applicationContext.refresh(); // Bean 오브젝트 생성해줌
 
 		// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
