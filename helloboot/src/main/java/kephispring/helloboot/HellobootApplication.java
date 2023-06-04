@@ -22,13 +22,33 @@ import java.io.IOException;
 public class HellobootApplication {
 
 	public static void main(String[] args) {
+		// 스프링 컨테이너 통합하기
+		GenericWebApplicationContext applicationContext = new GenericWebApplicationContext() {
+			@Override
+			protected void onRefresh() {
+				super.onRefresh(); // 생략하면 안됨!
+
+				TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
+				WebServer webServer = serverFactory.getWebServer(servletContext ->
+						servletContext.addServlet("dispatcherServlet",
+								new DispatcherServlet(this)
+						).addMapping("/*")
+				);
+				webServer.start();
+			}
+		};
+		applicationContext.registerBean(HelloController.class);
+		applicationContext.registerBean(SimpleHelloService.class);
+		applicationContext.refresh();
+
+		/*
 		// Spring 컨테이너 만들기(Assembler)
 		// 스프링 컨테이너는 오브젝트를 만들어 놓고 재사용하기에 싱글톤 패턴과 유사하다, 즉 싱글턴 레지스터라고 한다.
 		// GenericApplicationContext applicationContext = new GenericApplicationContext(); DispatcherServlet 작업 전 프론트 컨트롤러 작업
 		GenericWebApplicationContext applicationContext = new GenericWebApplicationContext();
 		applicationContext.registerBean(HelloController.class); // Bean 등록 끝
 		applicationContext.registerBean(SimpleHelloService.class); // 컨트롤러 생성자에 주입한다(Dependency injection)
-		applicationContext.refresh(); // Bean 오브젝트 생성해줌, efresh()는 이름이 좀 헷갈리는데 사실 start()임. 이제 컨테이너가 어떤 빈을 만들지 다 알게됐으니 빈을 모두 생성하고 연결하고 컨테이너로서 동작을 시작하게 하는 메소드
+		applicationContext.refresh(); // 스프링 컨테이너 초기화 작업. Bean 오브젝트 생성해줌, efresh()는 이름이 좀 헷갈리는데 사실 start()임. 이제 컨테이너가 어떤 빈을 만들지 다 알게됐으니 빈을 모두 생성하고 연결하고 컨테이너로서 동작을 시작하게 하는 메소드
 
 		// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
 		TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
@@ -77,8 +97,8 @@ public class HellobootApplication {
 					resp.getWriter().println("Hello " + name);
 				}
 			}).addMapping("/hello");
-			 */
 		});
 		webServer.start();
+		*/
 	}
 }
