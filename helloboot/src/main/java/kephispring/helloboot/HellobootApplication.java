@@ -4,6 +4,7 @@ package kephispring.helloboot;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,31 +19,34 @@ import java.io.IOException;
 
 public class HellobootApplication {
 
-	// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
 	public static void main(String[] args) {
+		// Spring 컨테이너 만들기
+		GenericApplicationContext applicationContext = new GenericApplicationContext();
+		applicationContext.registerBean(HelloController.class); // Bean 등록 끝
+		applicationContext.refresh(); // Bean 오브젝트 생성해줌
+
+		// 아파치 톰캣 웹서버를 임의로 구현 - 서블릿 등록하기
 		TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
 			// 프론트 컨트롤러 처리
 			servletContext.addServlet("frontcontroller", new HttpServlet() {
-			 HelloController helloController = new HelloController();
-
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 					// 인증, 보안, 다국어, 공통 기능
 					if (req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())) {
 						/* GET /hello */
+						// name을 가져와서 넣어주는 것, Dto라든지 Bean으로 넘겨주는 것을 바인딩
 						String name = req.getParameter("name");
 
 						// HelloController에 작업을 위임
-						// name을 가져와서 넣어주는 것, Dto라든지 Bean으로 넘겨주는 것을 바인딩
+						HelloController helloController = applicationContext.getBean(HelloController.class);
 					    String ret = helloController.hello(name);
 
 						// /hello로 요청된 응답을 여기에서 처리한다.
-						resp.setStatus(HttpStatus.OK.value());
-						resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+						resp.setContentType(MediaType.TEXT_PLAIN_VALUE);
 						resp.getWriter().println(ret);
-					} else if (req.getRequestURI().equals("/user")) {
-
+						// resp.setStatus(HttpStatus.OK.value()); GET은 생략 가능
+						// resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE); setContentType으로 간단히 설정 가능
 					} else {
 						resp.setStatus(HttpStatus.NOT_FOUND.value());
 					}
