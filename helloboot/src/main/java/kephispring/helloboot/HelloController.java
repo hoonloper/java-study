@@ -1,5 +1,8 @@
 package kephispring.helloboot;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +17,14 @@ import java.util.Objects;
 // @Controller Componet 어노테이션이 포함되어 있다.
 @RestController // Controller 확장. @Controller, @ResponseBody를 메타 어노테이션으로 가지고 있다.
 public class HelloController {
+    private final ApplicationContext applicationContext;
     private final HelloService helloService;
 
-    public HelloController(HelloService helloService) {
+    public HelloController(HelloService helloService, ApplicationContext applicationContext) {
         this.helloService = helloService;
+        this.applicationContext = applicationContext; // applicationContext를 두번째로 주입하는 방법
+
+        System.out.println(applicationContext);
     }
 
     // @RequestMapping(value = "/hello", method = RequestMethod.GET) 옛날방식
@@ -26,4 +33,13 @@ public class HelloController {
     public String hello(String name) { // String을 리턴하면 view를 가장 먼저 찾으려고 하는데 없어서 404 에러가 발생한다.
         return helloService.sayHello(Objects.requireNonNull(name));
     }
+
+    /* applicationContext를 첫번째로 주입하는 방법
+    implements ApplicationContextAware를 사용해야 한다.
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        System.out.println(applicationContext); // 자동 주입됐을 때 터미널에 띄워줄 것
+        this.applicationContext = applicationContext;
+    }
+     */
 }
