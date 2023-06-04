@@ -4,6 +4,9 @@ package kephispring.helloboot;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,10 +24,13 @@ public class HellobootApplication {
 			servletContext.addServlet("hello", new HttpServlet() {
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+					// 동적인 응답을 만들어낸다.
+					String name = req.getParameter("name");
+
 					// /hello로 요청된 응답을 여기에서 처리한다.
-					resp.setStatus(200);
-					resp.setHeader("Content-Type", "text/plain");
-					resp.getWriter().println("Hello Servlet");
+					resp.setStatus(HttpStatus.OK.value());
+					resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+					resp.getWriter().println("Hello " + name);
 				}
 			}).addMapping("/hello");
 		});
