@@ -1,2 +1,3 @@
 kephispring.config.autoconfig.DispatcherServletConfig
 kephispring.config.autoconfig.TomcatWebServerConfig
+kephispring.config.autoconfig.JettyWebServerConfig
