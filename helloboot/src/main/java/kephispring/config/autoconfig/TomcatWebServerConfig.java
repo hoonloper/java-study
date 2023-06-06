@@ -16,18 +16,23 @@ import org.springframework.util.ClassUtils;
 //@Conditional(TomcatWebServerConfig.TomcatCondition.class)
 @ConditionalMyOnClass("org.apache.catalina.startup.Tomcat")
 public class TomcatWebServerConfig {
-    @Value("${contextPath}")
-    String contextPath;
+//    @Value("${contextPath:}")
+//    String contextPath;
+//
+//    @Value("${port:8080}") // default값 넣기 ':'
+//    int port;
 
     @Bean("tomcatWebServerFactory")
     @ConditionalOnMissingBean // 커스텀을 위한 어노테이션
-    public ServletWebServerFactory serverFactory() {
+    public ServletWebServerFactory serverFactory(ServerProperties properties) {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
 
-        factory.setContextPath(this.contextPath);
+        factory.setContextPath(properties.getContextPath());
+        factory.setPort(properties.getPort());
         // factory.setContextPath(env.getProperty("contextPath")); // 모든 API path에 적용됨, 파라미터에 Environment env
         return factory;
     }
+
 
 //    static class TomcatCondition implements Condition {
 //        @Override
