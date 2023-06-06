@@ -2,6 +2,7 @@ package kephispring.config.autoconfig;
 
 import kephispring.config.ConditionalMyOnClass;
 import kephispring.config.MyAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -15,11 +16,16 @@ import org.springframework.util.ClassUtils;
 //@Conditional(TomcatWebServerConfig.TomcatCondition.class)
 @ConditionalMyOnClass("org.apache.catalina.startup.Tomcat")
 public class TomcatWebServerConfig {
+    @Value("${contextPath}")
+    String contextPath;
+
     @Bean("tomcatWebServerFactory")
     @ConditionalOnMissingBean // 커스텀을 위한 어노테이션
-    public ServletWebServerFactory serverFactory(Environment env) {
+    public ServletWebServerFactory serverFactory() {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.setContextPath(env.getProperty("contextPath")); // 모든 API path에 적용됨
+
+        factory.setContextPath(this.contextPath);
+        // factory.setContextPath(env.getProperty("contextPath")); // 모든 API path에 적용됨, 파라미터에 Environment env
         return factory;
     }
 
