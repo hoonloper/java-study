@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-@Configuration // 구성 정보를 가지고 있는 클래스이다. 즉 팩토리 메소드인 것을 알려줌, 빈 팩토리 메소드를 가지는 것 이상으로 전체 애플리케이션을 구성하는 데 중요한 정보를 넣을 수 있어서 중요하다
-@ComponentScan // 등록된 모든 Component 클래스들을 찾아서 빈으로 등록해 편해서 정극 추천. 편리해서 항상 좋은 것은 아니고, 정확하게 어떤 것들이 등록되는지 확인하려면 번거로울 수 있다.
+// @Configuration 구성 정보를 가지고 있는 클래스이다. 즉 팩토리 메소드인 것을 알려줌, 빈 팩토리 메소드를 가지는 것 이상으로 전체 애플리케이션을 구성하는 데 중요한 정보를 넣을 수 있어서 중요하다
+// @ComponentScan 등록된 모든 Component 클래스들을 찾아서 빈으로 등록해 편해서 정극 추천. 편리해서 항상 좋은 것은 아니고, 정확하게 어떤 것들이 등록되는지 확인하려면 번거로울 수 있다.
+@MySpringBootAnnotation
 public class HellobootApplication {
 	/*
 	// 팩토리 메소드 패턴 활용하기
@@ -25,15 +26,15 @@ public class HellobootApplication {
 		return new SimpleHelloService();
 	}
 	 */
-	// 웹 서버 빈 등록하기, 팩토리 메소드
-	@Bean
-	public ServletWebServerFactory serverFactory() {
-		return new TomcatServletWebServerFactory();
-	}
-	@Bean
-	public DispatcherServlet dispatcherServlet() {
-		return new DispatcherServlet(); // 라이프 사이클 메소드
-	}
+	// 웹 서버 빈 등록하기, 팩토리 메소드 Config로 만듦
+//	@Bean
+//	public ServletWebServerFactory serverFactory() {
+//		return new TomcatServletWebServerFactory();
+//	}
+//	@Bean
+//	public DispatcherServlet dispatcherServlet() {
+//		return new DispatcherServlet(); // 라이프 사이클 메소드
+//	}
 
 
 	public static void main(String[] args) {
