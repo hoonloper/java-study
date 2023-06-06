@@ -3,6 +3,25 @@ package kephispring.helloboot;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@UnitTest
+@interface FastUnitTest {
+
+}
+
+// 커스텀 메타 어노테이션
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD}) // ElementType.ANNOTATION_TYPE를 추가하면 얘를 또 메타 어노테이션을 만들 수 있다
+@Test
+@interface UnitTest {
+}
 public class HelloServiceTest {
     @Test
     void simpleHelloService() {
