@@ -21,6 +21,11 @@ public class HelloController {
 //    private final ApplicationContext applicationContext;
     private final HelloService helloService;
 
+    @GetMapping("/count")
+    public String count(String name) {
+        return name + ": " + helloService.countOf(name);
+    }
+
     // 생성자를 통해 주입, 프로퍼티 세터를 통해 주입하든 빈 오브젝트 타입 정보를 가지고 후보를 찾아와서 자동으로 연결을 해달라
     // 이제 오토와이어링을 자동으로 하겠다는 룰을 만들어서 안써도됨, 단 데코레이터를 쓴다면 얘기가 달라짐
     // @Autowired
