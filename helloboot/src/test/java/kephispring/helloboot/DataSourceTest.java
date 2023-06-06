@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@ExtendWith(SpringExtension.class) // junit 테스트 확장
-@ContextConfiguration(classes = HellobootApplication.class) // 모든 빈 정보를 끌어옴
-@TestPropertySource("classpath:/application.properties")
+@HellobootTest
 public class DataSourceTest {
     @Autowired
     DataSource dataSource;
