@@ -1,6 +1,7 @@
 package kephispring.helloboot;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ public class HelloController {
 //    private final ApplicationContext applicationContext;
     private final HelloService helloService;
 
+    // 생성자를 통해 주입, 프로퍼티 세터를 통해 주입하든 빈 오브젝트 타입 정보를 가지고 후보를 찾아와서 자동으로 연결을 해달라
+    // 이제 오토와이어링을 자동으로 하겠다는 룰을 만들어서 안써도됨, 단 데코레이터를 쓴다면 얘기가 달라짐
+    // @Autowired
     public HelloController(HelloService helloService) {
         this.helloService = helloService;
     }

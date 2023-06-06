@@ -12,4 +12,13 @@ public class HelloServiceTest {
 
         Assertions.assertThat(ret).isEqualTo("Hello Test");
     }
+
+    @Test // 프록시 패턴도 깊게 공부해보자
+    void helloDecorator() {
+        HelloDecorator decorator = new HelloDecorator(name -> name);
+
+        String ret = decorator.sayHello("Test");
+
+        Assertions.assertThat(ret).isEqualTo("*Test*");
+    }
 }
