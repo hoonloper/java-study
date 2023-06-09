@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class SpringbootAcApplication {
+	// 자동 구성 빈 확인하기
 	@Bean
 	ApplicationRunner run(ConditionEvaluationReport report) {
 		return args -> {
