@@ -4,12 +4,14 @@ import com.example.hellospring.domain.Member;
 import com.example.hellospring.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 // 서비스는 비즈니스에 의존적으로 설계 및 개발
 //@Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
 
