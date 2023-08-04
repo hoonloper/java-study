@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 // 임의로 빈을 등록한 후 DI를 해주는 설정
 @Configuration
 public class SpringConfig {
-    @Bean
-    public MemberService memberService() {
-        return new MemberService(memberRepository());
-    }
-
-    @Bean
-    public MemberRepository memberRepository() {
-        return new MemoryMemberRepository();
-    }
+//    @Bean
+//    public MemberService memberService() {
+//        return new MemberService(memberRepository());
+//    }
+//
+//    @Bean
+//    public MemberRepository memberRepository() {
+//        return new MemoryMemberRepository();
+//    }
 }
