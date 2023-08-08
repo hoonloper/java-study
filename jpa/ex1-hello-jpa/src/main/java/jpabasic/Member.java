@@ -8,19 +8,13 @@ import java.util.Date;
 
 @Entity
 public class Member {
-    // Id 직접 할당할 때 사용
-    // @GeneratedValue
-    // strategy
-    // IDENTITY: DB에 위임
-    // SEQUENCE: DB 시퀀스 오브젝트 사용, ORACLE @SequenceGenerator 필요
-    // TABLE: 키 생성용 테이블 사용, 모든 DB에서 사용, TableGenerator 필요
-    // AUTO: 방언에 따라 자동 지정
+    // id 값을 알 수 있는 시점은 DB에 데이터가 등록된 시점임
+    // 영속성 컨텍스트는 PK가 있어야 됨
+    // IDENTITY 전략에서만 .persist() 호출한 시점애 insert 쿼리를 날림
 
-    // 기본 키 제약 조건: null 아님, 유일, 변하면 안된다.
-    // 미래까지 이 조건을 만족하는 자연키는 찾기 어렵다. 대리키(대체키)를 사용하자
-    // 예를 들어 주민등록번호도 기본 키로 적절하지 않다.
-    // 권장: Long형 + 대체키 + 키 생성 전략 사용, Auto_increment 혹은 시퀀스 혹은 UUID
+    // SEQUENCE 전략에서는 allocationSize를 통해 데이터를 미리 땡겨놓아 성능, 동시성 이슈를 해결했다
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(nullable = false)
@@ -46,6 +40,18 @@ public class Member {
         this.name = name;
     }
 }
+// Id 직접 할당할 때 사용
+// @GeneratedValue
+// strategy
+// IDENTITY: DB에 위임
+// SEQUENCE: DB 시퀀스 오브젝트 사용, ORACLE @SequenceGenerator 필요
+// TABLE: 키 생성용 테이블 사용, 모든 DB에서 사용, TableGenerator 필요
+// AUTO: 방언에 따라 자동 지정
+
+// 기본 키 제약 조건: null 아님, 유일, 변하면 안된다.
+// 미래까지 이 조건을 만족하는 자연키는 찾기 어렵다. 대리키(대체키)를 사용하자
+// 예를 들어 주민등록번호도 기본 키로 적절하지 않다.
+// 권장: Long형 + 대체키 + 키 생성 전략 사용, Auto_increment 혹은 시퀀스 혹은 UUID
 
 
 
