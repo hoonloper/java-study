@@ -35,6 +35,25 @@ public class JpaMain {
         emf.close();
     }
 }
+/*
+ * 준영속 상태
+ * 영속 -> 준영속
+ * 영속 상태의 엔티티가 영속성 컨텍스트에서 분리(detached)
+ * 영속성 컨텍스트가 제공하는 기능을 사용 못함
+ */
+// 영속
+//            Member member = em.find(Member.class, 150L);
+//            // 더티체킹
+//            member.setName("AAAAA");
+//
+//            // 특정 엔티티를 준영속 상태로 전환, JPA에서 관리하지 않음, 직접 사용할 일은 거의 없다.
+//            em.detach(member);
+//
+//            // em 내부 영속성 컨텍스트 전체를 통째로 지움
+//            em.clear();
+//
+//            // em 종료
+//            em.close();
 
 /**
  * 이점 1. 1차 캐시
