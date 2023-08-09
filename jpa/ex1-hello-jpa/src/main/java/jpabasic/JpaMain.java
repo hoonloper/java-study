@@ -24,6 +24,7 @@ public class JpaMain {
         tx.begin();
 
         try {
+
             Team team = new Team();
             team.setName("TeamA");
             em.persist(team);
@@ -33,12 +34,17 @@ public class JpaMain {
             member.setTeam(team);
             em.persist(member);
 
-            Member findMember = em.find(Member.class, 1L);
-            List<Member> members = findMember.getTeam().getMembers();
+            // 이 작업은 꼭 추가해줘야함, 영속성 컨텍스트에는 없기 때문에
+            // 또한 객체지향 관점에서도 맞고, 테스트 케이스에서도 필요함
+            // 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하자
+            // 연관관계 편의 메소드를 생성하자, set 메소드에 add하는 코드를 추가하면 편의성이 증가한다.
+            // -> 다만 set은 관례 때문에 잘 사용하지 않고 change와 같이 변경한다.
+            // 양방향 매핑시에 무한 루프를 조심하자 -> toString(), lombok, JSON 생성 라이브러리
+            // 컨트롤러에서는 절대 Entity로 뽑지 말자 - 무한 루프, 엔티티 변경하면 API 스펙 변경
+            team.getMembers().add(member);
+            team.addMember(member); // 연관관계 편의 메소드
 
-            for(Member m : members) {
-                System.out.println("m = " + m.getName());
-            }
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
