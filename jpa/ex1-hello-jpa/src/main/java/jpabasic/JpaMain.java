@@ -33,6 +33,12 @@ public class JpaMain {
             member.setTeam(team);
             em.persist(member);
 
+            Member findMember = em.find(Member.class, 1L);
+            List<Member> members = findMember.getTeam().getMembers();
+
+            for(Member m : members) {
+                System.out.println("m = " + m.getName());
+            }
             tx.commit();
         } catch (Exception e) {
             tx.rollback();

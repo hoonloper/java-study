@@ -18,7 +18,7 @@ public class Member {
 
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
-    @ManyToOne(fetch = FetchType.LAZY) // 쿼리가 분리돼서 나감, 즉 호출할 때만 연관 테이블 조회가 된다는 의미
+    @ManyToOne // Lazy -> 쿼리가 분리돼서 나감, 즉 호출할 때만 연관 테이블 조회가 된다는 의미
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
