@@ -8,27 +8,25 @@ import java.util.Date;
 
 @Entity
 public class Member {
-    // id 값을 알 수 있는 시점은 DB에 데이터가 등록된 시점임
-    // 영속성 컨텍스트는 PK가 있어야 됨
-    // IDENTITY 전략에서만 .persist() 호출한 시점애 insert 쿼리를 날림
-
-    // SEQUENCE 전략에서는 allocationSize를 통해 데이터를 미리 땡겨놓아 성능, 동시성 이슈를 해결했다
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue
+    @Column(name = "MEMBER_ID")
+    private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    public Member() {
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
+    @ManyToOne(fetch = FetchType.LAZY) // 쿼리가 분리돼서 나감, 즉 호출할 때만 연관 테이블 조회가 된다는 의미
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
-    }
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,7 +37,26 @@ public class Member {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }
+
+
+// id 값을 알 수 있는 시점은 DB에 데이터가 등록된 시점임
+// 영속성 컨텍스트는 PK가 있어야 됨
+// IDENTITY 전략에서만 .persist() 호출한 시점애 insert 쿼리를 날림
+
+// SEQUENCE 전략에서는 allocationSize를 통해 데이터를 미리 땡겨놓아 성능, 동시성 이슈를 해결했다
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
 // Id 직접 할당할 때 사용
 // @GeneratedValue
 // strategy
