@@ -28,10 +28,12 @@ public class Main {
 //            TypedQuery<Member> query = em.createQuery("select m from Member m where m.id = '100", Member.class);
 //            Member result = query.getSingleResult(); // 결과가 정확하게 하나여야 함, 없을 때 - NoResult, 둘 이상 - NonUniqueResult
 
-            TypedQuery<Member> query = em.createQuery("select m from Member m where m.username = :username", Member.class);
-            query.setParameter("username", "member1");
-            Member sigleResult = query.getSingleResult();
+//            TypedQuery<Member> query = em.createQuery("select m from Member m where m.username = :username", Member.class);
+//            query.setParameter("username", "member1");
+//            Member sigleResult = query.getSingleResult();
 
+            List<MemberDTO> query = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+                    .getResultList();
 
             tx.commit();
         } catch (Exception e) {
