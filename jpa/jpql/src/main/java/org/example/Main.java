@@ -13,11 +13,28 @@ public class Main {
         tx.begin();
 
         try {
-
             Member member = new Member();
             member.setUsername("member1");
             member.setAge(10);
             em.persist(member);
+
+            List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
+                    .getResultList();
+
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
+    }
+}
+
 
 //            TypedQuery<Member> member = em.createQuery("select m from Member m", Member.class);
 //            Query query = em.createQuery("select m.username, m.age from Member m");
@@ -32,16 +49,5 @@ public class Main {
 //            query.setParameter("username", "member1");
 //            Member sigleResult = query.getSingleResult();
 
-            List<MemberDTO> query = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
-                    .getResultList();
-
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        emf.close();
-    }
-}
+//            List<MemberDTO> query = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+//                    .getResultList();
