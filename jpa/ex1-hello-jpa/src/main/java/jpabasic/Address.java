@@ -1,7 +1,8 @@
 package jpabasic;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Embeddable // 값 타입을 정의하는 곳
@@ -11,6 +12,10 @@ public class Address {
 
     @Column(name = "ZIPCODE") // 컬럼 사용 가능
     private String zipcode;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
 
     public Address(String city, String street, String zipcode) {
         this.city = city;
