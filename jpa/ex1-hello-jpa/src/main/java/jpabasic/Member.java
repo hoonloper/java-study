@@ -12,36 +12,29 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-//    @Column(name = "TEAM_ID")
-//    private Long teamId;
-    @ManyToOne(fetch = FetchType.LAZY) // Lazy -> 쿼리가 분리돼서 나감, 즉 호출할 때만 연관 테이블 조회가 된다는 의미
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
+    @Embedded
+    private Period workPeriod;
 
-    public Long getId() {
-        return id;
-    }
+    @Embedded
+    private Address homeAddress;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
+    // 중복 일 땐 AttributeOverrides
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))
+    )
+    private Address workAddress;
 }
+
+
+    //    @Column(name = "TEAM_ID")
+//    private Long teamId;
+//    @ManyToOne(fetch = FetchType.LAZY) // Lazy -> 쿼리가 분리돼서 나감, 즉 호출할 때만 연관 테이블 조회가 된다는 의미
+//    @JoinColumn(name = "TEAM_ID")
+//    private Team team;
+
 
 
 // id 값을 알 수 있는 시점은 DB에 데이터가 등록된 시점임
